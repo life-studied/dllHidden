@@ -44,6 +44,13 @@ std::vector<PEBInfo::Info> PEBInfo::GetInfo()
     return Allinfo;
 }
 
+bool PEBInfo::HidInfo(const wchar_t* dllName)
+{
+    HMODULE hMod = GetModuleHandleW(dllName);
+    if (hMod) return HidInfo(hMod);
+    return false;
+}
+
 bool PEBInfo::HidInfo(LPVOID adrBase)
 {
     for (auto& i : nowInfo)

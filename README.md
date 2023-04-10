@@ -11,13 +11,15 @@
 the class PEBInfo provide the interface:
 
 * GetInfo: return the vector of dllInfo（the struct defined in class）
-* HidInfo: given the dllBase, the function will hide it
+* HidInfo: given the dllName（wide string）, the function will hide it, return the result
 * RecoverInfo: the function will recover the hidden dllInfo
 
 ## Example
 
 ```C++
 #include "PEBEnumMod.h"
+#include "iostream"
+
 int main()
 {
     PEBInfo info;
@@ -31,9 +33,9 @@ int main()
         return -1;
     }
 
-    for (auto const & i : Allinfo)
+    for (auto const& i : Allinfo)
     {
-        
+
         std::wcout
             << "ImageSize:" << i.ImageSize
             << "\tDllBase:" << i.DllBase
@@ -43,8 +45,8 @@ int main()
     }
 
     std::cout << "Hid-----------------------------------------------" << std::endl;
-    info.HidInfo(Allinfo[2].DllBase);
-    std::wcout << "HidInfo:" << Allinfo[2].FullDllName.Buffer << std::endl;
+    if (!info.HidInfo(L"ntdll.dll")) std::cout << "could not find the following dll:" << std::endl;
+    std::wcout << "HidInfo:" << L"ntdll.dll" << std::endl;
     getchar();
     info.RecoverInfo();
     while (1);

@@ -49,6 +49,8 @@ private:
 public:
     PEBInfo();
     std::vector<Info> GetInfo();
-    bool HidInfo(LPVOID adrBase);
+    bool HidInfo(const wchar_t* dllName);
     void RecoverInfo();
+private:
+    bool HidInfo(LPVOID adrBase);
 };
