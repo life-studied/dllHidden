@@ -1,8 +1,4 @@
-﻿#include <iostream>
-#include <Windows.h>
-#include <winternl.h>
-#include <vector>
-#include "PEBEnumMod.h"
+﻿#include "PEBEnumMod.h"
 
 PEBInfo::PEBInfo() : pData(nullptr)
 {

@@ -1,6 +1,11 @@
 # dllHidden
 > hide the injected dll by PEB
 
+## Environment
+
+* OS:win10
+* x86
+
 ## Interface Introduction
 
 the class PEBInfo provide the interface:
