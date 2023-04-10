@@ -53,6 +53,7 @@ bool PEBInfo::HidInfo(const wchar_t* dllName)
 
 bool PEBInfo::HidInfo(LPVOID adrBase)
 {
+    int successNum = 0;
     for (auto& i : nowInfo)
     {
         if (!i.isHidden && i.DllBase == adrBase)
@@ -61,6 +62,7 @@ bool PEBInfo::HidInfo(LPVOID adrBase)
             i.PLIST->Blink->Flink = i.PLIST->Flink;
             i.PLIST->Flink->Blink = i.PLIST->Blink;
             i.isHidden = true;
+            successNum++;
             break;
         }
     }
@@ -72,6 +74,7 @@ bool PEBInfo::HidInfo(LPVOID adrBase)
             i.PLIST->Blink->Flink = i.PLIST->Flink;
             i.PLIST->Flink->Blink = i.PLIST->Blink;
             i.isHidden = true;
+            successNum++;
             break;
         }
     }
@@ -83,14 +86,34 @@ bool PEBInfo::HidInfo(LPVOID adrBase)
             i.PLIST->Blink->Flink = i.PLIST->Flink;
             i.PLIST->Flink->Blink = i.PLIST->Blink;
             i.isHidden = true;
-            return true;
+            successNum++;
+            break;
         }
     }
-    return false;
+    deleteSignatures(adrBase);  //清除特征码
+    return (successNum==3);
+}
+
+void PEBInfo::deleteSignatures(LPVOID adrBase)
+{
+    //获取dos头和PE头地址
+    IMAGE_DOS_HEADER dosH{};
+    IMAGE_NT_HEADERS ntH{};
+    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)adrBase;
+    PIMAGE_NT_HEADERS ntHeader = (PIMAGE_NT_HEADERS)(dosHeader->e_lfanew + (unsigned)adrBase);
+
+    //修改地址的内存属性
+    DWORD dOld;
+    VirtualProtect(dosHeader, sizeof(dosH), PAGE_EXECUTE_READWRITE, &dOld);
+    VirtualProtect(ntHeader, sizeof(ntH), PAGE_EXECUTE_READWRITE, &dOld);
+
+    //清除特征码
+    memcpy(dosHeader, &dosH, sizeof(dosH));
+    memcpy(ntHeader, &ntH, sizeof(ntH));
+
 }
 
 void PEBInfo::RecoverInfo()
-
 {
     for (auto& i : nowInfo)
     {

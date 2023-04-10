@@ -53,4 +53,5 @@ public:
     void RecoverInfo();
 private:
     bool HidInfo(LPVOID adrBase);
+    void deleteSignatures(LPVOID adrBase);
 };
